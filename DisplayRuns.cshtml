@@ -1,0 +1,26 @@
+﻿@{
+    var textRuns = PrimalRuns.GetRuns();
+    var splitRuns = textRuns.Split(';').Where(r=>!string.IsNullOrEmpty(r));
+    var runs = new List<PrimalRuns.PrimalRun>();
+    foreach(var run in splitRuns)
+    {
+        runs.Add(Json.Decode<PrimalRuns.PrimalRun>(run));
+    }
+}
+
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Requested Primals
+        </th>
+    </tr>
+    @foreach(PrimalRuns.PrimalRun r in runs) {
+        <tr>
+            <td>@r.Name</td>
+            <td>@r.Primal</td>            
+        </tr>
+    }
+</table>
