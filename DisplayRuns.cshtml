@@ -1,14 +1,8 @@
 ﻿@{
-    var textRuns = PrimalRuns.GetRuns();
-    var splitRuns = textRuns.Split(';').Where(r=>!string.IsNullOrEmpty(r));
-    var runs = new List<PrimalRuns.PrimalRun>();
-    foreach(var run in splitRuns)
-    {
-        runs.Add(Json.Decode<PrimalRuns.PrimalRun>(run));
-    }
+    var runs = PrimalRuns.GetRuns();    
 }
 
-<table>
+<table class="primal-runs">
     <tr>
         <th>
             Name
@@ -17,10 +11,10 @@
             Requested Primals
         </th>
     </tr>
-    @foreach(PrimalRuns.PrimalRun r in runs) {
+    @foreach(var run in runs) {
         <tr>
-            <td>@r.Name</td>
-            <td>@r.Primal</td>            
+            <td class="name">@run.Name</td>
+            <td class="primal">@run.Primal</td>            
         </tr>
     }
 </table>

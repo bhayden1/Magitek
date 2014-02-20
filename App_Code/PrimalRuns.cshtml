@@ -6,30 +6,27 @@
         public bool Deleted {get;set;}
         public string RequestDate {get;set;}
     }
-
-    private const string FilePath = "~/App_Data/runs.txt";
+        
     public static void AddRun()
     {
-        var dataFile = Server.MapPath(FilePath);        
-        var runs = ReadRunsFromFile(dataFile);
+        var db = Database.Open("Magitek");
+        var insert = "INSERT INTO PrimalRuns (Name, Primal, Scheduled, Deleted, RequestDate) " +
+                     "VALUES (@0, @1, @2, @3, @4)";                            
         var run = new PrimalRun();
-        run.Name = Request["name"];
+        run.Name = Html.Encode(Request["name"]);
         run.Primal = Request["primal"];
         run.Scheduled = false;
         run.Deleted = false;
         run.RequestDate = DateTime.Now.ToShortDateString();
-        runs += Json.Encode(run) + ";";
+        db.Execute(insert, run.Name, run.Primal, run.Scheduled, run.Deleted, run.RequestDate);            
+    }   
 
-        File.WriteAllText(@dataFile, runs);        
-    }
-
-    private static string ReadRunsFromFile(string mappedPath)
+    public static IEnumerable<dynamic> GetRuns()
     {        
-        return File.ReadAllText(mappedPath);        
-    }
-
-    public static string GetRuns()
-    {        
-        return File.ReadAllText(Server.MapPath(FilePath));        
+        var db = Database.Open("Magitek");
+        var select = "SELECT Name, Primal, Scheduled, Deleted, RequestDate " +
+                     "FROM PrimalRuns " +
+                     "ORDER BY RequestDate DESC";
+        return db.Query(select);       
     }
 }
